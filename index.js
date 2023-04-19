@@ -7,7 +7,17 @@ const resetBtn = document.querySelector(`#reset`);
 // Restarting game
 resetBtn.addEventListener(`click`, () => location.reload());
 
-let computerChoices = [{ choice: 'Rock', value: 0 }, { choice: 'Paper', value: 1 }, { choice: 'Scissors', value: 2 }];
+// Added an event listeners for buttons
+optionBtn.forEach((button) => {
+    button.addEventListener("click", getPlayerChoice);
+});
+
+
+let computerChoices = [
+    { choice: "Rock", value: 0 },
+    { choice: "Paper", value: 1 },
+    { choice: "Scissors", value: 2 },
+];
 let playerScore = 0;
 let compScore = 0;
 let playerChoice;
@@ -17,39 +27,35 @@ let playerChoice;
  * @returns choice
  */
 function getComputerChoice() {
-    let choice = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+    let choice =
+        computerChoices[Math.floor(Math.random() * computerChoices.length)];
     return choice;
 }
 
-/**
- * This will start the game.
- * @param {*} playerSelection 
- * @param {*} computerSelection 
- */
+
 function playRound(playerSelection, computerSelection) {
     let roundWinCombo = `${playerSelection}-${computerSelection.value}`;
-    let playerWinCombo = ['1-0', '0-2', '2-1'];
+    let playerWinCombo = ["1-0", "0-2", "2-1"];
 
     if (Number(playerSelection) === computerSelection.value) {
-        playerPoints.textContent = ++playerScore
-        computerPoints.textContent = ++compScore
-        roundResults.textContent = "Tie!"
+        playerPoints.textContent = ++playerScore;
+        computerPoints.textContent = ++compScore;
+        roundResults.textContent = "Tie!";
     } else if (playerWinCombo.includes(roundWinCombo)) {
-        playerPoints.textContent = ++playerScore
+        playerPoints.textContent = ++playerScore;
         roundResults.textContent = `You win! ${playerChoice} beats ${computerSelection.choice}`;
     } else {
-        computerPoints.textContent = ++compScore
+        computerPoints.textContent = ++compScore;
         roundResults.textContent = `You lose! ${computerSelection.choice} beats ${playerChoice}`;
     }
     checkWinner();
 }
 
-
 const winnerResults = {
-    computer: ["You Lost the game to a computer!", 'red'],
-    player: ["You Win the game!!!!", 'green'],
-    tie: ["The game is a Tie!", 'blue']
-}
+    computer: ["You Lost the game to a computer!", "red"],
+    player: ["You Win the game!!!!", "green"],
+    tie: ["The game is a Tie!", "blue"],
+};
 
 /**
  * this function will check for winner of current round.
@@ -57,9 +63,9 @@ const winnerResults = {
 function checkWinner() {
     if (compScore === 5 || playerScore === 5) {
         if (compScore === playerScore) {
-            updateWinner('tie')
+            updateWinner("tie");
         } else {
-            let win = `${(compScore > playerScore) ? 'computer' : 'player'}`;
+            let win = `${compScore > playerScore ? "computer" : "player"}`;
             updateWinner(win);
         }
     }
@@ -67,19 +73,18 @@ function checkWinner() {
 
 /**
  * This will show who won in this round.
- * @param {*} winner 
+ * @param {*} winner
  */
 function updateWinner(winner) {
     roundResults.textContent = winnerResults[winner][0];
     roundResults.style.color = winnerResults[winner][1];
-
-    optionBtn.forEach(button => {
-        button.removeEventListener('click', getPlayerChoice);
+    optionBtn.forEach((button) => {
+        button.removeEventListener("click", getPlayerChoice);
     });
 }
 
 function getPlayerChoice(e) {
-    let playerSelection = (e.target.id);
+    let playerSelection = e.target.id;
     playerChoice = e.target.textContent;
-    playRound(playerSelection, computerPlay());
+    playRound(playerSelection, getComputerChoice());
 }
